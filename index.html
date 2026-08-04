@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Dicky Daily — Editor Kubah Emas</title>
+<meta name="theme-color" content="#0F7638">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dicky Daily">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --yl:#F5C518;--yl-d:#C89B00;--yl-l:#FFF9E0;--yl-b:#FFE066;
+  --ch:#1C1E26;--ch2:#252830;
+  --bg:#F4F3EE;--bg2:#ECEAE2;--card:#FFFFFF;
+  --txt:#1C1E26;--txt2:#3A3D4A;--mut:#7A7E8A;
+  --bdr:#E0DDD4;--bdr2:#D0CEC4;
+  --grn:#16A34A;--grn-l:#F0FDF4;--grn-d:#15803D;
+  --red:#DC2626;--red-l:#FEF2F2;
+  --blu:#1D4ED8;--blu-l:#EFF6FF;--blu-b:#BFDBFE;
+  --pur:#7C3AED;--pur-l:#F5F3FF;--pur-b:#DDD6FE;
+  --shd:0 2px 12px rgba(0,0,0,.07);--shd2:0 6px 28px rgba(0,0,0,.13);
+  --font:'Poppins',-apple-system,sans-serif;--r:16px;
+}
+body.dark{
+  --bg:#131418;--bg2:#1C1E26;--card:#1E2028;
+  --txt:#F0EFE8;--txt2:#B0AEA0;--mut:#5A5E6A;
+  --bdr:#2A2C38;--bdr2:#343642;
+  --shd:0 2px 12px rgba(0,0,0,.5);--shd2:0 8px 32px rgba(0,0,0,.6);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;max-width:480px;margin:0 auto;transition:background .25s,color .25s;padding-bottom:env(safe-area-inset-bottom)}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--ch);padding:env(safe-area-inset-top) 20px 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.35)}
+body.dark .topbar{background:#0A0B0E}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;height:54px}
+.app-label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--yl);opacity:.9}
+.topbar-r{display:flex;align-items:center;gap:8px}
+.icon-btn{width:34px;height:34px;border-radius:9px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:15px}
+.icon-btn:hover{border-color:var(--yl);color:var(--yl)}
+
+/* ── GREETING ── */
+.greeting-block{padding:20px 20px 0}
+.greeting-date{font-size:11px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.greeting-msg{font-size:20px;font-weight:800;color:var(--txt);line-height:1.25}
+.greeting-msg span{color:var(--yl)}
+
+/* ── PROGRESS HERO ── */
+.hero{padding:18px 20px 0;display:flex;align-items:center;gap:20px}
+.ring-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--bdr2);stroke-width:9}
+.ring-fg{fill:none;stroke:var(--yl);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.34,1.56,.64,1)}
+.ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:22px;font-weight:900;color:var(--txt);line-height:1}
+.ring-sub{font-size:10px;font-weight:600;color:var(--mut);margin-top:1px}
+.hero-info{flex:1}
+.streak-badge{display:inline-flex;align-items:center;gap:5px;background:var(--yl-l);border:1.5px solid var(--yl-b);border-radius:20px;padding:4px 11px;font-size:12px;font-weight:700;color:var(--yl-d);margin-bottom:10px}
+body.dark .streak-badge{background:#2A2200;border-color:#5A4500;color:#FFD840}
+.hero-title{font-size:14px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.hero-desc{font-size:11.5px;color:var(--mut);line-height:1.5}
+.all-done-msg{font-size:12px;font-weight:700;color:var(--grn);margin-top:6px;display:none}
+
+/* ── DAY TAG ── */
+.day-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;margin-bottom:6px}
+.day-toko{background:var(--blu-l);color:var(--blu);border:1px solid var(--blu-b)}
+.day-jasa{background:var(--pur-l);color:var(--pur);border:1px solid var(--pur-b)}
+.day-special{background:var(--grn-l);color:var(--grn-d);border:1px solid #BBF7D0}
+body.dark .day-toko{background:#0A1628;border-color:#1D3A6E;color:#93C5FD}
+body.dark .day-jasa{background:#150A2E;border-color:#4C1D95;color:#C4B5FD}
+
+/* ── MAIN ── */
+.main{padding:18px 20px 30px}
+.section{margin-bottom:16px}
+.sec-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sec-ico{font-size:16px;flex-shrink:0}
+.sec-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.13em;color:var(--mut)}
+.sec-time{font-size:9.5px;color:var(--mut);margin-left:2px;font-weight:400}
+.sec-badge{margin-left:auto;font-size:9.5px;font-weight:700;padding:2px 9px;border-radius:20px}
+.sec-badge.done{background:var(--grn-l);color:var(--grn-d);border:1px solid #BBF7D0}
+.sec-badge.partial{background:var(--yl-l);color:var(--yl-d);border:1px solid var(--yl-b)}
+.sec-badge.empty{background:var(--bg2);color:var(--mut);border:1px solid var(--bdr)}
+body.dark .sec-badge.done{background:#052E16;border-color:#14532D;color:#4ADE80}
+body.dark .sec-badge.partial{background:#2A2200;border-color:#5A4500;color:#FFD840}
+
+/* ── TASK ITEMS ── */
+.task-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shd);border:1px solid var(--bdr);overflow:hidden}
+.task-item{display:flex;align-items:flex-start;gap:12px;padding:11px 15px;border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .12s;-webkit-tap-highlight-color:transparent}
+.task-item:last-child{border-bottom:none}
+.task-item:active{background:var(--bg2)}
+.task-item.done{opacity:.55}
+.task-time{font-size:10px;font-weight:700;color:var(--mut);min-width:36px;margin-top:3px;flex-shrink:0}
+.task-item.done .task-time{color:var(--grn)}
+.task-cb{width:22px;height:22px;border-radius:7px;border:2px solid var(--bdr2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.task-item.done .task-cb{background:var(--yl);border-color:var(--yl)}
+.task-cb svg{width:13px;height:13px;stroke:#1C1E26;stroke-width:2.5;fill:none;stroke-linecap:round;opacity:0;transform:scale(.5);transition:all .2s}
+.task-item.done .task-cb svg{opacity:1;transform:scale(1)}
+.task-body{flex:1;min-width:0}
+.task-label{font-size:13px;font-weight:600;color:var(--txt);line-height:1.35;transition:color .2s}
+.task-item.done .task-label{text-decoration:line-through;color:var(--mut)}
+.task-detail{font-size:11px;color:var(--mut);line-height:1.55;margin-top:3px;display:none}
+.task-item.expanded .task-detail{display:block}
+.task-arrow{font-size:11px;color:var(--mut);margin-top:3px;transition:transform .2s;flex-shrink:0}
+.task-item.expanded .task-arrow{transform:rotate(180deg)}
+
+/* ── SPECIAL BADGES ── */
+.task-tag{display:inline-block;font-size:8.5px;font-weight:700;padding:1px 6px;border-radius:4px;margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em}
+.tag-selasa{background:#DBEAFE;color:#1E40AF}
+.tag-toko{background:#EFF6FF;color:#1D4ED8}
+.tag-jasa{background:#F5F3FF;color:#7C3AED}
+.tag-akhir{background:#FEF2F2;color:#DC2626}
+
+/* ── REST DAY ── */
+.rest-day{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;text-align:center;padding:40px 30px}
+.rest-ico{font-size:60px;margin-bottom:20px}
+.rest-title{font-size:22px;font-weight:800;color:var(--txt);margin-bottom:8px}
+.rest-sub{font-size:13px;color:var(--mut);line-height:1.6}
+.rest-streak{margin-top:20px;background:var(--yl-l);border:1.5px solid var(--yl-b);border-radius:20px;padding:8px 20px;font-size:13px;font-weight:700;color:var(--yl-d)}
+body.dark .rest-streak{background:#2A2200;border-color:#5A4500;color:#FFD840}
+
+/* ── HISTORY ── */
+.history-row{display:flex;align-items:center;gap:8px;padding:8px 15px;border-bottom:1px solid var(--bdr);font-size:12px}
+.history-row:last-child{border-bottom:none}
+.history-date{color:var(--mut);font-size:11px;font-weight:500;min-width:60px}
+.history-bar-wrap{flex:1;height:6px;background:var(--bdr2);border-radius:99px;overflow:hidden}
+.history-bar{height:100%;border-radius:99px}
+.history-pct{font-size:11px;font-weight:700;min-width:32px;text-align:right}
+
+/* ── CELEBRATE ── */
+#celebrate{position:fixed;inset:0;pointer-events:none;z-index:999;display:none}
+.celebrate-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--ch);color:var(--yl);font-family:var(--font);font-size:13px;font-weight:700;padding:12px 22px;border-radius:30px;box-shadow:var(--shd2);z-index:1000;display:none;white-space:nowrap}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:1px solid var(--bdr);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 16px rgba(0,0,0,.07)}
+body.dark .bottom-nav{background:#13141A}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:9px 0 8px;cursor:pointer;border:none;background:none;font-family:var(--font);-webkit-tap-highlight-color:transparent}
+.nav-ico{font-size:20px;opacity:.4;transition:opacity .15s}
+.nav-lbl{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);transition:color .15s}
+.nav-btn.active .nav-ico{opacity:1}
+.nav-btn.active .nav-lbl{color:var(--yl-d)}
+body.dark .nav-btn.active .nav-lbl{color:var(--yl)}
+body{padding-bottom:calc(62px + env(safe-area-inset-bottom))}
+
+/* ── SIDEBAR (desktop only, hidden by default) ── */
+.sidebar{display:none}
+
+@media(min-width:900px){
+  body{max-width:none;margin:0;padding-bottom:0;padding-left:220px}
+  .topbar{padding-left:0}
+  #app, #page2, #history-panel, #settings-panel, .rest-day{
+    max-width:640px;margin-left:auto;margin-right:auto;
+  }
+  .bottom-nav{display:none !important}
+  #btn-history, #btn-settings{display:none}
+
+  .sidebar{
+    display:flex;flex-direction:column;gap:2px;
+    position:fixed;left:0;top:0;bottom:0;width:220px;
+    background:var(--ch);padding:24px 14px;z-index:250;
+    box-shadow:2px 0 20px rgba(0,0,0,.15);
+  }
+  body.dark .sidebar{background:#0A0B0E}
+  .sidebar-brand{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--yl);opacity:.9;padding:0 10px;margin-bottom:18px}
+  .side-btn{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:10px;border:none;background:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;color:rgba(255,255,255,.55);text-align:left;transition:all .15s;-webkit-tap-highlight-color:transparent}
+  .side-btn:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+  .side-btn.active{background:rgba(245,197,24,.14);color:var(--yl)}
+  .side-ico{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+}
+
+/* ── ALASAN ── */
+.alasan-wrap{border-top:1px dashed var(--bdr);margin:6px -15px -11px;padding:8px 15px 10px}
+.alasan-toggle{font-size:10.5px;font-weight:600;color:var(--amb);cursor:pointer;display:flex;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent}
+.alasan-toggle.has-text{color:var(--mut)}
+.alasan-field{margin-top:6px;display:none}
+.alasan-field.open{display:block}
+.alasan-textarea{width:100%;min-height:52px;padding:8px 10px;border:1.5px solid var(--bdr2);border-radius:9px;font-family:var(--font);font-size:11.5px;color:var(--txt);background:var(--bg);resize:none;outline:none;transition:border-color .15s;line-height:1.5}
+.alasan-textarea:focus{border-color:var(--amb)}
+.alasan-saved{font-size:10.5px;color:var(--mut);font-style:italic;margin-top:4px;display:none}
+.task-item.done .alasan-wrap{display:none}
+
+/* ── PAGE 2 ── */
+.p2-wrap{display:none;padding:16px 20px 30px}
+.p2-wrap.active{display:block}
+.p2-header{margin-bottom:16px}
+.p2-title{font-size:16px;font-weight:800;color:var(--txt);margin-bottom:2px}
+.p2-sub{font-size:11.5px;color:var(--mut)}
+.p2-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shd);border:1px solid var(--bdr);margin-bottom:14px;overflow:hidden}
+.p2-card-head{padding:12px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:8px}
+.p2-card-ico{font-size:16px}
+.p2-card-title{font-size:13px;font-weight:700;color:var(--txt)}
+.p2-card-body{padding:14px 16px}
+.p2-num-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.p2-num-label{font-size:12px;font-weight:600;color:var(--txt2);flex:1}
+.p2-num-input{width:64px;height:36px;border:2px solid var(--bdr);border-radius:9px;text-align:center;font-family:var(--font);font-size:16px;font-weight:700;color:var(--txt);background:var(--card);outline:none;transition:border-color .15s}
+.p2-num-input:focus{border-color:var(--yl)}
+.p2-titles-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin-bottom:8px;display:block}
+.p2-title-row{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.p2-title-num{font-size:11px;font-weight:700;color:var(--mut);min-width:18px}
+.p2-title-input{flex:1;height:34px;padding:0 10px;border:1.5px solid var(--bdr);border-radius:8px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--txt);background:var(--card);outline:none;transition:border-color .15s}
+.p2-title-input:focus{border-color:var(--yl)}
+.p2-del-btn{width:28px;height:28px;border-radius:7px;border:1.5px solid var(--bdr);background:var(--bg2);color:var(--mut);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.p2-del-btn:hover{border-color:var(--red);color:var(--red)}
+.p2-add-btn{width:100%;height:34px;border-radius:9px;border:1.5px dashed var(--bdr2);background:var(--bg2);color:var(--mut);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;margin-top:4px}
+.p2-add-btn:hover{border-color:var(--yl);color:var(--yl-d)}
+.p2-save-btn{width:100%;height:48px;border-radius:var(--r);border:none;background:var(--ch);color:var(--yl);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .15s}
+.p2-save-btn:hover{background:var(--ch2)}
+.p2-saved-badge{display:none;align-items:center;justify-content:center;gap:6px;padding:10px;background:var(--grn-l);border:1px solid var(--grn-b);border-radius:10px;font-size:12px;font-weight:700;color:var(--grn-d);margin-top:10px}
+.p2-saved-badge.show{display:flex}
+
+@media(max-width:380px){.greeting-msg{font-size:18px}.ring-wrap{width:96px;height:96px}.ring-pct{font-size:19px}}
+</style>
+</head>
+<body>
+<!-- REST DAY -->
+<div class="rest-day" id="rest-day">
+  <div class="rest-ico">🎬</div>
+  <div class="rest-title">Hari Libur, Dicky!</div>
+  <div class="rest-sub">Hari Minggu adalah hari istirahat.<br>Recharge, besok Senin kita produksi lagi.</div>
+  <div class="rest-streak" id="rest-streak-text">🔥 0 hari streak</div>
+</div>
+
+<!-- SIDEBAR (desktop only) -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">Dicky Daily</div>
+  <button class="side-btn active" id="side-checklist" onclick="goTo('checklist')">
+    <span class="side-ico">✅</span><span>Checklist</span>
+  </button>
+  <button class="side-btn" id="side-progress" onclick="goTo('progress')">
+    <span class="side-ico">📋</span><span>Progress Harian</span>
+  </button>
+  <button class="side-btn" id="side-settings" onclick="goTo('settings')">
+    <span class="side-ico">☁️</span><span>Cloud Backup</span>
+  </button>
+  <button class="side-btn" id="side-history" onclick="goTo('history')">
+    <span class="side-ico">🕐</span><span>Riwayat</span>
+  </button>
+  <div style="flex:1"></div>
+  <button class="side-btn" id="side-theme-btn" onclick="toggleTheme()">
+    <span class="side-ico" id="side-theme-ico">🌙</span><span id="side-theme-lbl">Mode Gelap</span>
+  </button>
+</nav>
+
+<!-- TOPBAR -->
+<header class="topbar" id="main-topbar" style="display:none">
+  <div class="topbar-inner">
+    <span class="app-label">Dicky Daily</span>
+    <div class="topbar-r">
+      <button class="icon-btn" id="btn-history" title="Riwayat">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="12 8 12 12 14 14"/><circle cx="12" cy="12" r="9"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-settings" title="Pengaturan">⚙️</button>
+      <button class="icon-btn" id="btn-theme">🌙</button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+  <div class="greeting-block">
+    <div class="greeting-date" id="greeting-date">—</div>
+    <div class="greeting-msg" id="greeting-msg">Selamat pagi, <span>Dicky!</span></div>
+    <div style="margin-top:8px" id="day-tags"></div>
+  </div>
+
+  <div class="hero">
+    <div class="ring-wrap">
+      <svg viewBox="0 0 110 110" width="110" height="110">
+        <circle class="ring-bg" cx="55" cy="55" r="46"/>
+        <circle class="ring-fg" id="ring-fg" cx="55" cy="55" r="46" stroke-dasharray="289" stroke-dashoffset="289"/>
+      </svg>
+      <div class="ring-inner">
+        <span class="ring-pct" id="ring-pct">0%</span>
+        <span class="ring-sub" id="ring-sub">0 / 0</span>
+      </div>
+    </div>
+    <div class="hero-info">
+      <div class="streak-badge"><span>🔥</span><span id="streak-text">0 hari streak</span></div>
+      <div class="hero-title" id="hero-title">Mulai hari ini!</div>
+      <div class="hero-desc" id="hero-desc">Selesaikan semua task dan jaga streak kamu.</div>
+      <div class="all-done-msg" id="all-done-msg">✅ Semua selesai! Kerja keras hari ini.</div>
+    </div>
+  </div>
+
+  <div class="main" id="main-content"></div>
+</div>
+
+<!-- HISTORY PANEL -->
+<div id="history-panel" style="display:none;padding:0 20px 30px">
+  <div style="font-size:14px;font-weight:700;color:var(--txt);padding:16px 0 10px">Riwayat 14 Hari Terakhir</div>
+  <div class="task-card" id="history-list"></div>
+  <button onclick="closeHistory()" style="margin-top:14px;width:100%;padding:11px;border-radius:var(--r);border:1.5px solid var(--bdr);background:var(--card);font-family:var(--font);font-size:13px;font-weight:600;color:var(--txt);cursor:pointer">← Kembali</button>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="settings-panel" style="display:none;padding:0 20px 30px">
+  <div style="font-size:14px;font-weight:700;color:var(--txt);padding:16px 0 10px">Pengaturan</div>
+  <div id="settings-body"></div>
+  <button onclick="closeSettings()" style="margin-top:14px;width:100%;padding:11px;border-radius:var(--r);border:1.5px solid var(--bdr);background:var(--card);font-family:var(--font);font-size:13px;font-weight:600;color:var(--txt);cursor:pointer">← Kembali</button>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottom-nav" style="display:none">
+  <button class="nav-btn active" id="nav-checklist" onclick="goTo('checklist')">
+    <span class="nav-ico">✅</span>
+    <span class="nav-lbl">Checklist</span>
+  </button>
+  <button class="nav-btn" id="nav-progress" onclick="goTo('progress')">
+    <span class="nav-ico">📋</span>
+    <span class="nav-lbl">Progress Harian</span>
+  </button>
+</nav>
+
+<!-- PAGE 2: PROGRESS HARIAN -->
+<div class="p2-wrap" id="page2">
+  <div class="p2-header">
+    <div class="p2-title">Progress Harian</div>
+    <div class="p2-sub" id="p2-date-label">—</div>
+  </div>
+  <div class="p2-card">
+    <div class="p2-card-head"><span class="p2-card-ico">⭐</span><span class="p2-card-title">Review Google My Business</span></div>
+    <div class="p2-card-body">
+      <div class="p2-num-row">
+        <span class="p2-num-label">Jumlah review yang dibalas hari ini</span>
+        <input class="p2-num-input" type="number" id="inp-review" min="0" placeholder="0">
+      </div>
+    </div>
+  </div>
+  <div class="p2-card">
+    <div class="p2-card-head"><span class="p2-card-ico">🎯</span><span class="p2-card-title">Bank Konten Iklan</span></div>
+    <div class="p2-card-body">
+      <div class="p2-num-row">
+        <span class="p2-num-label">Jumlah konten iklan dibuat</span>
+        <input class="p2-num-input" type="number" id="inp-iklan-count" min="0" placeholder="0">
+      </div>
+      <span class="p2-titles-label">Judul Konten yang Dibuat</span>
+      <div id="titles-iklan"></div>
+      <button class="p2-add-btn" onclick="addTitle('iklan')">+ Tambah Judul Konten</button>
+    </div>
+  </div>
+  <div class="p2-card">
+    <div class="p2-card-head"><span class="p2-card-ico">📱</span><span class="p2-card-title">Bank Konten Sosial Media</span></div>
+    <div class="p2-card-body">
+      <div class="p2-num-row">
+        <span class="p2-num-label">Jumlah konten sosmed dibuat</span>
+        <input class="p2-num-input" type="number" id="inp-sosmed-count" min="0" placeholder="0">
+      </div>
+      <span class="p2-titles-label">Judul Konten yang Dibuat</span>
+      <div id="titles-sosmed"></div>
+      <button class="p2-add-btn" onclick="addTitle('sosmed')">+ Tambah Judul Konten</button>
+    </div>
+  </div>
+  <div class="p2-card">
+    <div class="p2-card-head"><span class="p2-card-ico">🖨️</span><span class="p2-card-title">Bank Konten Promosi Offline</span></div>
+    <div class="p2-card-body">
+      <div class="p2-num-row">
+        <span class="p2-num-label">Jumlah konten offline dibuat</span>
+        <input class="p2-num-input" type="number" id="inp-offline-count" min="0" placeholder="0">
+      </div>
+      <span class="p2-titles-label">Judul Konten yang Dibuat</span>
+      <div id="titles-offline"></div>
+      <button class="p2-add-btn" onclick="addTitle('offline')">+ Tambah Judul Konten</button>
+    </div>
+  </div>
+  <button class="p2-save-btn" onclick="saveProgress()">💾 Simpan Progress Harian</button>
+  <div class="p2-saved-badge" id="p2-saved-badge">✅ Progress tersimpan untuk hari ini</div>
+</div>
+
+<div id="celebrate"><canvas id="confetti-canvas"></canvas></div>
+<div class="celebrate-toast" id="celebrate-toast">🎉 100% — Semua task selesai hari ini!</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────
+const DAYS_ID   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const MONTHS_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+const DAILY = [
+  { id:'p1', block:'pagi',  time:'08.00', label:'Dokumentasi 2 Foto & 2 Video Toko',          detail:'Ambil 2 foto dan 2 video aktivitas toko hari ini. Bahan untuk WA Status & upload ke Google My Business.' },
+  { id:'p2', block:'pagi',  time:'08.20', label:'Cek Komentar & Message di Meta',              detail:'Buka Meta Business Suite. Balas semua komentar di postingan dan semua pesan (Message) yang masuk hari ini.' },
+  { id:'p3', block:'pagi',  time:'08.40', label:'Send Materi Status WA Toko — Tema Hari Ini',  detail:'Kirim materi konten untuk Status WA Toko sesuai tema yang sudah direncanakan. Pastikan visual sudah siap.' },
+  { id:'p4', block:'pagi',  time:'08.50', label:'Send Status WA Toko — Konten Promo',          detail:'Kirimkan konten promo ke Status WA Toko. Visual menarik, pesan jelas, CTA terbaca.' },
+  { id:'p5', block:'pagi',  time:'09.00', label:'Send Materi Program Rekomendasi di Grup',     detail:'Kirim materi atau reminder Program Rekomendasi ke grup WhatsApp yang sudah ditentukan.' },
+  { id:'p6', block:'pagi',  time:'09.15', label:'Tambah 2 Foto & 2 Video ke Profil GMB',       detail:'Upload 2 foto dan 2 video terbaru ke profil Google My Business Kubah Emas. Pastikan kualitas visual bagus.' },
+  { id:'p7', block:'pagi',  time:'09.30', label:'Posting 1 Postingan di GMB',                  detail:'Buat dan publish 1 postingan di Google My Business. Sertakan foto, teks menarik, dan Call-to-Action yang jelas.' },
+  { id:'p8', block:'pagi',  time:'09.45', label:'Balas Review di Google My Business',          detail:'Cek semua review baru di GMB Kubah Emas. Balas setiap review — positif maupun negatif — dengan respons profesional dan hangat.' },
+  { id:'q1', block:'qc',    time:'10.00', label:'Cek Daily Checklist Program Rekomendasi',     detail:'Buka checklist program rekomendasi. Input manual data tim yang belum mengisi hari ini.' },
+  { id:'s1', block:'sore',  time:'15.00', label:'Monitoring Pendataan Dokumentasi Proyek',     detail:'Cek progress dokumentasi proyek sesuai penjadwalan. Pastikan semua proyek sudah terdokumentasi dengan benar dan tepat waktu.' },
+];
+
+const WEEKLY_SELASA = [
+  { id:'w_sch', block:'schedule', time:'10.15', label:'Schedule 3 Posting untuk 7 Hari ke Depan', detail:'Buat dan jadwalkan 3 konten posting di Social Media Toko dan Jasa untuk 7 hari ke depan. Gunakan fitur Schedule di Meta/Creator Studio. Pastikan konten sudah siap sebelum dijadwalkan.' },
+];
+
+const PRODUKSI_TOKO = [
+  { id:'pr1_t', block:'produksi', time:'10.45', label:'Produksi Bank Konten — Divisi Toko (Sesi 1)', detail:'Produksi aset konten Divisi Toko: Creative Iklan untuk Meta Ads, Posting Sosmed, Konten WA, dan materi Keperluan Promosi Offline (banner, brosur, dll).' },
+  { id:'pr2_t', block:'produksi', time:'13.00', label:'Produksi Bank Konten — Divisi Toko (Sesi 2)', detail:'Lanjutkan produksi bank konten Divisi Toko. Fokus pada aset yang belum selesai di sesi pagi. Target: bank konten terpenuhi untuk minggu ini.' },
+];
+
+const PRODUKSI_JASA = [
+  { id:'pr1_j', block:'produksi', time:'10.45', label:'Produksi Bank Konten — Divisi Jasa (Sesi 1)', detail:'Produksi aset konten Divisi Jasa: Creative Iklan untuk Meta Ads, Posting Sosmed, Konten WA, dan materi Keperluan Promosi Offline.' },
+  { id:'pr2_j', block:'produksi', time:'13.00', label:'Produksi Bank Konten — Divisi Jasa (Sesi 2)', detail:'Lanjutkan produksi bank konten Divisi Jasa. Fokus pada aset yang belum selesai di sesi pagi.' },
+];
+
+const AKHIR_BULAN = [
+  { id:'akh1', block:'akhir', time:'15.30', label:'Isi Performance Pembuatan Konten Bulan Ini', detail:'Rekap dan isi laporan performa produksi konten bulan ini. Berapa konten yang sudah diproduksi? Berapa yang diposting? Evaluasi mana yang performanya baik.' },
+];
+
+const BLOCK_INFO = {
+  pagi:     { label:'☀️ Pagi — Morning Routine',       time:'08.00 – 09.45' },
+  qc:       { label:'✅ Quality Check',                time:'10.00' },
+  schedule: { label:'📅 Schedule Konten',              time:'10.15 — Selasa' },
+  produksi: { label:'🎨 Produksi Bank Konten',         time:'10.45 & 13.00' },
+  sore:     { label:'📊 Monitoring',                   time:'15.00' },
+  akhir:    { label:'📈 Laporan Akhir Bulan',          time:'15.30' },
+};
+
+// ── STORAGE ───────────────────────────────────────────
+const SK = { daily:'de_daily_', streak:'de_streak', history:'de_history' };
+
+function todayKey(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function monthKey(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function ls(k,d){ try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}catch(e){return d;} }
+function ss(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} scheduleSync(); }
+
+// ── CLOUD BACKUP (Google Sheets via Apps Script) ───────
+// URL & TOKEN tertanam permanen di file ini (bukan di HP), jadi
+// walaupun HP di-clear cache/reset total, app tetap tau alamat
+// backup-nya. Ganti 2 nilai di bawah SEBELUM upload ke GitHub.
+var CLOUD_CONFIG={
+  url:'https://script.google.com/macros/s/AKfycbziGLJSDm6_2ES1xwz_oL_3YbPbe1wI1PrJ3wfua4khNLvRgQR7e2zvAJyyvO_ea0rg/exec',
+  token:'dicky'
+};
+var CLOUD_URL_KEY='de_cloud_url', CLOUD_TOKEN_KEY='de_cloud_token', CLOUD_LAST_KEY='de_cloud_last_sync';
+function getCloudUrl(){
+  var v=localStorage.getItem(CLOUD_URL_KEY);
+  if(v)return v;
+  return (CLOUD_CONFIG.url&&CLOUD_CONFIG.url.indexOf('GANTI_')!==0)?CLOUD_CONFIG.url:'';
+}
+function getCloudToken(){
+  var v=localStorage.getItem(CLOUD_TOKEN_KEY);
+  if(v)return v;
+  return (CLOUD_CONFIG.token&&CLOUD_CONFIG.token.indexOf('GANTI_')!==0)?CLOUD_CONFIG.token:'';
+}
+function setCloudLastSync(ts){localStorage.setItem(CLOUD_LAST_KEY,ts);}
+function getCloudLastSync(){return localStorage.getItem(CLOUD_LAST_KEY)||'';}
+function getDeviceId(){
+  var id=localStorage.getItem('de_device_id');
+  if(!id){id='hp-'+Math.random().toString(36).slice(2,8);localStorage.setItem('de_device_id',id);}
+  return id;
+}
+// Sapu semua key 'de_' di localStorage (kecuali pengaturan cloud & device id
+// sendiri) — otomatis nyangkut checklist harian, history, streak, alasan.
+var CLOUD_EXCLUDE=['de_cloud_url','de_cloud_token','de_cloud_last_sync','de_device_id'];
+function collectAllData(){
+  var data={};
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k.indexOf('de_')===0 && CLOUD_EXCLUDE.indexOf(k)===-1){
+      data[k]=localStorage.getItem(k);
+    }
+  }
+  return data;
+}
+function applyCloudData_(data){
+  Object.keys(data).forEach(function(k){
+    if(k.indexOf('de_')===0 && CLOUD_EXCLUDE.indexOf(k)===-1){
+      localStorage.setItem(k,data[k]);
+    }
+  });
+}
+var _syncTimer=null;
+function scheduleSync(){
+  if(!getCloudUrl())return;
+  if(_syncTimer)clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(function(){syncToCloud(false);},3000);
+}
+function syncToCloud(manual){
+  var url=getCloudUrl();
+  if(!url){if(manual)alert('Cloud Backup belum aktif.');return;}
+  var payload={token:getCloudToken(),device:getDeviceId(),data:collectAllData()};
+  fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.ok){setCloudLastSync(new Date().toISOString());if(manual){alert('✅ Backup ke cloud berhasil.');renderSettings();}}
+      else if(manual){alert('❌ Gagal backup: '+(res.error||'unknown error'));}
+    })
+    .catch(function(err){if(manual)alert('❌ Gagal konek ke cloud: '+err);});
+}
+function restoreFromCloud(manual){
+  var url=getCloudUrl();
+  if(!url){if(manual)alert('Cloud Backup belum aktif.');return;}
+  fetch(url+'?token='+encodeURIComponent(getCloudToken()))
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(!res.ok){if(manual)alert('❌ '+(res.error||'Gagal ambil backup.'));return;}
+      var doApply=function(){
+        applyCloudData_(res.data);
+        setCloudLastSync(res.timestamp);
+        location.reload();
+      };
+      if(manual){
+        if(confirm('Timpa data di HP ini dengan backup cloud tanggal '+new Date(res.timestamp).toLocaleString('id-ID')+'?'))doApply();
+      }else{doApply();}
+    })
+    .catch(function(err){if(manual)alert('❌ Gagal konek ke cloud: '+err);});
+}
+function checkAndRestoreOnBoot(){
+  var url=getCloudUrl();
+  if(!url)return;
+  var hasLocalData=Object.keys(collectAllData()).length>0;
+  if(hasLocalData)return;
+  fetch(url+'?token='+encodeURIComponent(getCloudToken()))
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(!res.ok)return;
+      if(confirm('Data di HP ini kosong, tapi ada backup di cloud (tanggal '+new Date(res.timestamp).toLocaleString('id-ID')+').\n\nPulihkan sekarang?')){
+        applyCloudData_(res.data);
+        setCloudLastSync(res.timestamp);
+        location.reload();
+      }
+    })
+    .catch(function(){});
+}
+
+function getDailyChecked(){ return ls(SK.daily+todayKey(), []); }
+function setDailyChecked(a){ ss(SK.daily+todayKey(), a); }
+function getStreak(){ return ls(SK.streak, {count:0, last:''}); }
+function setStreak(o){ ss(SK.streak, o); }
+function getHistory(){ return ls(SK.history, []); }
+function setHistory(a){ ss(SK.history, a); }
+
+// ── DATE HELPERS ──────────────────────────────────────
+function isLastDayOfMonth(){
+  const d=new Date(),t=new Date(d);
+  t.setDate(t.getDate()+1);
+  return t.getMonth()!==d.getMonth();
+}
+
+function getTodayTasks(){
+  const day=new Date().getDay(); // 0=Sun
+  let tasks=[...DAILY];
+  if(day===2) tasks=tasks.concat(WEEKLY_SELASA); // Selasa
+  if(day>=1&&day<=3) tasks=tasks.concat(PRODUKSI_TOKO); // Senin-Rabu
+  if(day>=4&&day<=6) tasks=tasks.concat(PRODUKSI_JASA); // Kamis-Sabtu
+  if(isLastDayOfMonth()) tasks=tasks.concat(AKHIR_BULAN);
+  return tasks;
+}
+
+// ── STATE ─────────────────────────────────────────────
+let todayDay     = new Date().getDay();
+let todayTasks   = [];
+let checked      = [];
+let celebFired   = false;
+
+function initState(){
+  todayTasks = getTodayTasks();
+  checked    = getDailyChecked();
+  celebFired = checked.length===todayTasks.length&&todayTasks.length>0&&ls('de_cele_'+todayKey(),false);
+}
+
+// ── STREAK ────────────────────────────────────────────
+function updateStreak(allDone){
+  if(!allDone)return;
+  const tk=todayKey();
+  const st=getStreak();
+  if(st.last===tk)return;
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  const ydKey=yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0');
+  const ydDay=yesterday.getDay();
+  let newCount=1;
+  if(st.last===ydKey){newCount=st.count+1;}
+  else if(ydDay===0&&st.count>0){
+    const db=new Date();db.setDate(db.getDate()-2);
+    const dbKey=db.getFullYear()+'-'+String(db.getMonth()+1).padStart(2,'0')+'-'+String(db.getDate()).padStart(2,'0');
+    if(st.last===dbKey)newCount=st.count+1;
+  }
+  setStreak({count:newCount,last:tk});
+  saveHistory(100);
+}
+
+function saveHistory(pct){
+  const tk=todayKey();
+  const hist=getHistory().filter(h=>h.date!==tk);
+  hist.push({date:tk,pct,done:checked.length,total:todayTasks.length});
+  setHistory(hist.slice(-60));
+}
+
+// ── RENDER ────────────────────────────────────────────
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderGreeting(){
+  const now=new Date();
+  const h=now.getHours();
+  const g=h<11?'Selamat pagi':h<15?'Selamat siang':h<18?'Selamat sore':'Selamat malam';
+  document.getElementById('greeting-date').textContent=`${DAYS_ID[now.getDay()]}, ${now.getDate()} ${MONTHS_ID[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('greeting-msg').innerHTML=`${g}, <span>Dicky!</span>`;
+
+  // Day tags
+  const tags=[];
+  const day=now.getDay();
+  if(day>=1&&day<=3) tags.push('<span class="day-tag day-toko">🎨 Hari Produksi Toko ('+['','Sen','Sel','Rab','','',''][day]+')</span>');
+  if(day>=4&&day<=6) tags.push('<span class="day-tag day-jasa">🎨 Hari Produksi Jasa ('+['','','','','Kam','Jum','Sab'][day]+')</span>');
+  if(day===2) tags.push('<span class="day-tag day-special">📅 Hari Schedule Posting</span>');
+  if(isLastDayOfMonth()) tags.push('<span class="day-tag" style="background:var(--red-l);color:var(--red);border:1px solid #FECACA">📈 Akhir Bulan — Isi Performance</span>');
+  document.getElementById('day-tags').innerHTML=tags.join(' ');
+}
+
+function renderProgress(){
+  const total=todayTasks.length;
+  const done=checked.length;
+  const pct=total>0?Math.round(done/total*100):0;
+  const circ=2*Math.PI*46;
+  document.getElementById('ring-pct').textContent=pct+'%';
+  document.getElementById('ring-sub').textContent=done+' / '+total;
+  document.getElementById('ring-fg').style.strokeDashoffset=circ*(1-pct/100);
+  const st=getStreak();
+  document.getElementById('streak-text').textContent=st.count+' hari berturut-turut';
+  document.getElementById('rest-streak-text').textContent='🔥 '+st.count+' hari streak';
+  if(pct===100){
+    document.getElementById('hero-title').textContent='Kerja keras hari ini! 🏆';
+    document.getElementById('hero-desc').textContent='Semua task selesai. Konsistensi lu luar biasa.';
+    document.getElementById('all-done-msg').style.display='block';
+    if(!celebFired){triggerCelebrate();celebFired=true;ss('de_cele_'+todayKey(),true);}
+    updateStreak(true);
+  } else if(pct>=70){
+    document.getElementById('hero-title').textContent='Hampir selesai! 💪';
+    document.getElementById('hero-desc').textContent=(total-done)+' task lagi untuk hari yang sempurna.';
+    document.getElementById('all-done-msg').style.display='none';
+  } else if(pct>0){
+    document.getElementById('hero-title').textContent='Sudah mulai, terus gas!';
+    document.getElementById('hero-desc').textContent='Selesaikan semua task untuk jaga streak.';
+    document.getElementById('all-done-msg').style.display='none';
+  } else {
+    document.getElementById('hero-title').textContent='Mulai hari ini, Dicky!';
+    document.getElementById('hero-desc').textContent='Centang task pertama dan mulai streak baru.';
+    document.getElementById('all-done-msg').style.display='none';
+  }
+  if(pct>0&&pct<100) saveHistory(pct);
+}
+
+function getBlockTasks(blockId){
+  return todayTasks.filter(t=>t.block===blockId);
+}
+
+// ── ALASAN STORAGE ───────────────────────────────────
+function alasanKey(id){ return 'de_alasan_'+todayKey()+'_'+id; }
+function getAlasan(id){ return ls(alasanKey(id), ''); }
+function setAlasan(id, val){ ss(alasanKey(id), val); }
+
+function toggleAlasanField(id){
+  const field = document.getElementById('alasan-field-'+id);
+  if(!field) return;
+  const isOpen = field.classList.contains('open');
+  field.classList.toggle('open', !isOpen);
+  const toggle = document.getElementById('alasan-toggle-'+id);
+  if(toggle){
+    const hasText = !!getAlasan(id);
+    toggle.textContent = isOpen ? (hasText?'📝 Lihat alasan':'⚠️ Tambah alasan tidak selesai') : '▲ Tutup';
+  }
+}
+
+function onAlasanInput(id, val){
+  setAlasan(id, val.trim());
+  const toggle = document.getElementById('alasan-toggle-'+id);
+  if(toggle) toggle.textContent = val.trim() ? '📝 Lihat alasan' : '⚠️ Tambah alasan tidak selesai';
+}
+
+function taskHTML(t){
+  const isDone=checked.includes(t.id);
+  const alasan=getAlasan(t.id);
+  let tag='';
+  if(t.block==='schedule') tag='<div><span class="task-tag tag-selasa">Selasa</span></div>';
+  if(t.id.includes('_t'))  tag='<div><span class="task-tag tag-toko">Divisi Toko</span></div>';
+  if(t.id.includes('_j'))  tag='<div><span class="task-tag tag-jasa">Divisi Jasa</span></div>';
+  if(t.block==='akhir')    tag='<div><span class="task-tag tag-akhir">Akhir Bulan</span></div>';
+
+  const alasanSection = !isDone ? `
+    <div class="alasan-wrap">
+      <div class="alasan-toggle ${alasan?'has-text':''}" id="alasan-toggle-${t.id}"
+        onclick="event.stopPropagation();toggleAlasanField('${t.id}')">
+        ${alasan?'📝 Lihat alasan':'⚠️ Tambah alasan tidak selesai'}
+      </div>
+      <div class="alasan-field ${alasan?'open':''}" id="alasan-field-${t.id}">
+        <textarea class="alasan-textarea" placeholder="Kenapa task ini belum selesai hari ini?..."
+          oninput="event.stopPropagation();onAlasanInput('${t.id}',this.value)"
+          onclick="event.stopPropagation()">${esc(alasan)}</textarea>
+      </div>
+    </div>` : '';
+
+  return`<div class="task-item${isDone?' done':''}" onclick="toggleTask('${t.id}')" data-id="${t.id}">
+    <span class="task-time">${esc(t.time)}</span>
+    <div class="task-cb"><svg viewBox="0 0 14 14"><polyline points="2,7 6,11 12,3"/></svg></div>
+    <div class="task-body">${tag}<div class="task-label">${esc(t.label)}</div><div class="task-detail">${esc(t.detail)}</div>${alasanSection}</div>
+    <span class="task-arrow" onclick="event.stopPropagation();this.closest('.task-item').classList.toggle('expanded')">▾</span>
+  </div>`;
+}
+
+function renderTasks(){
+  const BLOCK_ORDER=['pagi','qc','schedule','produksi','sore','akhir'];
+  let html='';
+  BLOCK_ORDER.forEach(blockId=>{
+    const tasks=getBlockTasks(blockId);
+    if(!tasks.length)return;
+    const info=BLOCK_INFO[blockId];
+    const doneCt=tasks.filter(t=>checked.includes(t.id)).length;
+    const badgeCls=doneCt===tasks.length?'done':doneCt>0?'partial':'empty';
+    html+=`<div class="section">
+      <div class="sec-head">
+        <span class="sec-ico">${info.label.split(' ')[0]}</span>
+        <div>
+          <div class="sec-title">${info.label.replace(/^..\s/,'')}</div>
+          <div class="sec-time">${info.time}</div>
+        </div>
+        <span class="sec-badge ${badgeCls}">${doneCt}/${tasks.length}</span>
+      </div>
+      <div class="task-card">${tasks.map(taskHTML).join('')}</div>
+    </div>`;
+  });
+  document.getElementById('main-content').innerHTML=html;
+}
+
+// ── TOGGLE TASK ───────────────────────────────────────
+function toggleTask(id){
+  const arr=getDailyChecked();
+  const idx=arr.indexOf(id);
+  if(idx>=0)arr.splice(idx,1);else arr.push(id);
+  setDailyChecked(arr);
+  checked=arr;
+  // Re-render just the item
+  const item=document.querySelector(`.task-item[data-id="${id}"]`);
+  if(item){
+    const isDone=checked.includes(id);
+    item.classList.toggle('done',isDone);
+  }
+  renderProgress();
+  // Re-render badges
+  document.querySelectorAll('.section').forEach((sec,i)=>{
+    const badge=sec.querySelector('.sec-badge');
+    const items=sec.querySelectorAll('.task-item');
+    if(!badge||!items.length)return;
+    const total=items.length;
+    const done=[...items].filter(el=>el.classList.contains('done')).length;
+    badge.className='sec-badge '+(done===total?'done':done>0?'partial':'empty');
+    badge.textContent=done+'/'+total;
+  });
+}
+
+// ── HISTORY ───────────────────────────────────────────
+function renderHistory(){
+  const hist=getHistory().slice(-14).reverse();
+  const now=todayKey();
+  if(!hist.length){
+    document.getElementById('history-list').innerHTML='<div style="padding:20px;text-align:center;color:var(--mut);font-size:12px">Belum ada riwayat. Mulai centang task hari ini!</div>';
+    return;
+  }
+  document.getElementById('history-list').innerHTML=hist.map(h=>{
+    const d=new Date(h.date+'T00:00:00');
+    const lbl=h.date===now?'Hari ini':DAYS_ID[d.getDay()]+', '+d.getDate()+' '+MONTHS_ID[d.getMonth()];
+    const barColor=h.pct===100?'var(--grn)':h.pct>=70?'var(--yl)':'var(--red)';
+    const pctColor=h.pct===100?'var(--grn)':h.pct>=70?'var(--yl-d)':'var(--red)';
+    return`<div class="history-row">
+      <div class="history-date">${lbl}</div>
+      <div class="history-bar-wrap"><div class="history-bar" style="width:${h.pct}%;background:${barColor}"></div></div>
+      <div class="history-pct" style="color:${pctColor}">${h.pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ── NAVIGATION (unified: dipakai bottom-nav mobile & sidebar desktop) ──
+function goTo(section){
+  // section: 'checklist' | 'progress' | 'history' | 'settings'
+  document.getElementById('app').style.display = section==='checklist' ? '' : 'none';
+  document.getElementById('page2').classList.toggle('active', section==='progress');
+  document.getElementById('history-panel').style.display = section==='history' ? 'block' : 'none';
+  document.getElementById('settings-panel').style.display = section==='settings' ? 'block' : 'none';
+
+  // Active state — bottom nav (mobile, cuma checklist/progress ada di sini)
+  document.getElementById('nav-checklist').classList.toggle('active', section==='checklist');
+  document.getElementById('nav-progress').classList.toggle('active', section==='progress');
+
+  // Active state — sidebar (desktop, ke-4nya ada)
+  ['checklist','progress','settings','history'].forEach(function(s){
+    var el = document.getElementById('side-'+s);
+    if(el) el.classList.toggle('active', s===section);
+  });
+
+  if(section==='progress') initPage2();
+  if(section==='history') renderHistory();
+  if(section==='settings') renderSettings();
+}
+// Nama lama tetap ada sebagai alias, biar kalau ada pemanggilan lama gak error
+function switchTab(tab){ goTo(tab); }
+function closeHistory(){ goTo('checklist'); }
+function closeSettings(){ goTo('checklist'); }
+
+// ── CONFETTI ─────────────────────────────────────────
+function triggerCelebrate(){
+  const el=document.getElementById('celebrate');
+  const toast=document.getElementById('celebrate-toast');
+  const canvas=document.getElementById('confetti-canvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  el.style.display='block';toast.style.display='block';
+  const colors=['#F5C518','#C89B00','#1C1E26','#fff','#FFE066','#F0A500'];
+  const pieces=Array.from({length:80},()=>({
+    x:Math.random()*canvas.width,y:Math.random()*-canvas.height*.5-20,
+    w:7+Math.random()*7,h:5+Math.random()*5,
+    c:colors[Math.floor(Math.random()*colors.length)],
+    r:Math.random()*Math.PI*2,vy:3+Math.random()*5,
+    vx:(Math.random()-.5)*3,vr:(Math.random()-.5)*.15,
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);
+      ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+      p.y+=p.vy;p.x+=p.vx;p.r+=p.vr;p.vy+=.07;
+    });
+    frame++;
+    if(frame<120)requestAnimationFrame(draw);
+    else{el.style.display='none';setTimeout(()=>{toast.style.display='none';},500);}
+  }
+  draw();
+  setTimeout(()=>{toast.style.display='none';},3500);
+}
+
+// ── THEME ─────────────────────────────────────────────
+function toggleTheme(){
+  const isDark=document.body.classList.toggle('dark');
+  document.getElementById('btn-theme').textContent=isDark?'☀️':'🌙';
+  const sIco=document.getElementById('side-theme-ico'), sLbl=document.getElementById('side-theme-lbl');
+  if(sIco) sIco.textContent = isDark?'☀️':'🌙';
+  if(sLbl) sLbl.textContent = isDark?'Mode Terang':'Mode Gelap';
+  localStorage.setItem('de_theme',isDark?'dark':'light');
+}
+
+// ── PAGE 2: PROGRESS HARIAN ───────────────────────────
+const P2_KEY = () => 'de_progress_'+todayKey();
+const TITLE_CATS = ['iklan','sosmed','offline'];
+
+function getP2Data(){ return ls(P2_KEY(), {review:0, iklan:{count:0,titles:[]}, sosmed:{count:0,titles:[]}, offline:{count:0,titles:[]}}); }
+function saveP2Data(data){ ss(P2_KEY(), data); }
+
+function renderTitleList(cat, titles){
+  const wrap = document.getElementById('titles-'+cat);
+  if(!wrap) return;
+  wrap.innerHTML = titles.map((t,i) => `
+    <div class="p2-title-row" id="title-row-${cat}-${i}">
+      <span class="p2-title-num">${i+1}.</span>
+      <input class="p2-title-input" type="text" value="${esc(t)}" placeholder="Judul konten ${i+1}..."
+        oninput="updateTitle('${cat}',${i},this.value)">
+      <button class="p2-del-btn" onclick="deleteTitle('${cat}',${i})">×</button>
+    </div>`).join('');
+}
+
+function addTitle(cat){
+  const data = getP2Data();
+  data[cat].titles.push('');
+  // Sync count with number of titles
+  if(data[cat].count < data[cat].titles.length) data[cat].count = data[cat].titles.length;
+  saveP2Data(data);
+  renderTitleList(cat, data[cat].titles);
+  document.getElementById('inp-'+cat+'-count').value = data[cat].count;
+  // Focus last input
+  const inputs = document.querySelectorAll('#titles-'+cat+' .p2-title-input');
+  if(inputs.length) inputs[inputs.length-1].focus();
+}
+
+function deleteTitle(cat, idx){
+  const data = getP2Data();
+  data[cat].titles.splice(idx, 1);
+  saveP2Data(data);
+  renderTitleList(cat, data[cat].titles);
+}
+
+function updateTitle(cat, idx, val){
+  const data = getP2Data();
+  data[cat].titles[idx] = val;
+  saveP2Data(data);
+}
+
+function initPage2(){
+  const now = new Date();
+  document.getElementById('p2-date-label').textContent =
+    DAYS_ID[now.getDay()]+', '+now.getDate()+' '+MONTHS_ID[now.getMonth()]+' '+now.getFullYear();
+
+  const data = getP2Data();
+  document.getElementById('inp-review').value      = data.review || '';
+  document.getElementById('inp-iklan-count').value  = data.iklan.count  || '';
+  document.getElementById('inp-sosmed-count').value = data.sosmed.count  || '';
+  document.getElementById('inp-offline-count').value= data.offline.count || '';
+  TITLE_CATS.forEach(cat => renderTitleList(cat, data[cat].titles));
+  document.getElementById('p2-saved-badge').classList.remove('show');
+}
+
+function saveProgress(){
+  const data = {
+    review:  parseInt(document.getElementById('inp-review').value)||0,
+    iklan:   { count: parseInt(document.getElementById('inp-iklan-count').value)||0,  titles: getP2Data().iklan.titles  },
+    sosmed:  { count: parseInt(document.getElementById('inp-sosmed-count').value)||0, titles: getP2Data().sosmed.titles  },
+    offline: { count: parseInt(document.getElementById('inp-offline-count').value)||0,titles: getP2Data().offline.titles },
+  };
+  saveP2Data(data);
+  document.getElementById('p2-saved-badge').classList.add('show');
+  setTimeout(()=>document.getElementById('p2-saved-badge').classList.remove('show'), 3000);
+}
+
+// Auto-save number inputs on change
+['inp-review','inp-iklan-count','inp-sosmed-count','inp-offline-count'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('change', saveProgress);
+});
+
+// ── PWA SW (file statis sw.js) ─────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./sw.js')
+      .then(function(r){console.log('[SW] OK',r.scope);})
+      .catch(function(e){console.warn('[SW]',e);});
+  });
+}
+
+// ── EVENTS ────────────────────────────────────────────
+document.getElementById('btn-theme').addEventListener('click',toggleTheme);
+document.getElementById('btn-history').addEventListener('click',function(){
+  goTo(document.getElementById('history-panel').style.display==='block' ? 'checklist' : 'history');
+});
+
+document.getElementById('btn-settings').addEventListener('click',function(){
+  goTo(document.getElementById('settings-panel').style.display==='block' ? 'checklist' : 'settings');
+});
+function renderSettings(){
+  var body=document.getElementById('settings-body');
+  var cUrl=getCloudUrl(),cLast=getCloudLastSync(),cEmbedded=(CLOUD_CONFIG.url.indexOf('GANTI_')!==0);
+  var box='padding:12px;border-radius:var(--r);margin-bottom:12px;font-size:12px;line-height:1.6';
+  var btn='width:100%;padding:11px;border-radius:var(--r);border:1.5px solid var(--bdr);background:var(--card);font-family:var(--font);font-size:13px;font-weight:600;color:var(--txt);cursor:pointer;margin-bottom:8px';
+  var h='';
+  h+='<div class="task-card" style="padding:14px;margin-bottom:14px">';
+  h+='<div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:10px">☁️ Cloud Backup</div>';
+  if(cEmbedded){
+    h+='<div style="'+box+';background:rgba(76,175,80,.12);color:#2E7D32">✅ Alamat backup sudah ketanam permanen di file app ini. Aman dari clear cache.</div>';
+  }else{
+    h+='<div style="'+box+';background:rgba(255,152,0,.12);color:#E65100">⚠️ Cloud Backup belum diaktifkan di file ini.</div>';
+  }
+  h+='<div style="font-size:11px;color:var(--mut);margin-bottom:10px">'+(cUrl?(cLast?'Sync terakhir: '+new Date(cLast).toLocaleString('id-ID'):'Belum pernah sync'):'—')+'</div>';
+  h+='<button style="'+btn+'" onclick="syncToCloud(true)">🔄 Sync Sekarang</button>';
+  h+='<button style="'+btn+'" onclick="restoreFromCloud(true)">⬇️ Pulihkan dari Cloud</button>';
+  h+='</div>';
+  body.innerHTML=h;
+}
+
+// ── INIT ─────────────────────────────────────────────
+if(localStorage.getItem('de_theme')==='dark'){
+  document.body.classList.add('dark');
+  document.getElementById('btn-theme').textContent='☀️';
+}
+
+if(new Date().getDay()===0){
+  // Minggu — Rest Day
+  document.getElementById('rest-day').style.display='flex';
+  document.getElementById('rest-streak-text').textContent='🔥 '+getStreak().count+' hari streak';
+} else {
+  document.getElementById('main-topbar').style.display='';
+  document.getElementById('app').style.display='';
+  document.getElementById('bottom-nav').style.display='flex';
+  initState();
+  renderGreeting();
+  renderProgress();
+  renderTasks();
+}
+
+setInterval(renderGreeting, 60000);
+
+// Cek apakah data lokal kosong (habis clear cache/reset HP) dan ada cloud backup
+checkAndRestoreOnBoot();
+</script>
+</body>
+</html>
