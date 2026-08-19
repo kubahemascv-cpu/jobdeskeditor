@@ -2,7 +2,7 @@
 // File statis, permanen di repo. Gantiin cara lama (blob URL) yang
 // dibikin dadakan tiap app dibuka — itu bikin instalasi app gak stabil.
 
-const CACHE = 'dicky-daily-v1';
+const CACHE = 'dicky-daily-v2';
 
 self.addEventListener('install', function (e) {
   e.waitUntil(
