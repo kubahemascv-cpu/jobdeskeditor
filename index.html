@@ -125,6 +125,14 @@ body.dark .sec-badge.partial{background:#2A2200;border-color:#5A4500;color:#FFD8
 body.dark .rest-streak{background:#2A2200;border-color:#5A4500;color:#FFD840}
 
 /* ── HISTORY ── */
+.history-summary-badge{display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r);margin-bottom:14px;border:1.5px solid var(--bdr);background:var(--card)}
+.history-summary-val{font-size:26px;font-weight:800;color:var(--txt);flex-shrink:0}
+.history-summary-right{flex:1}
+.history-summary-status{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.03em;padding:3px 10px;border-radius:20px;margin-bottom:3px}
+.history-summary-sub{font-size:11px;color:var(--mut)}
+.status-buruk{background:var(--red-l);color:var(--red)}
+.status-baik{background:var(--yl-l);color:var(--yl-d)}
+.status-sempurna{background:var(--grn-l);color:var(--grn-d)}
 .history-row{display:flex;align-items:center;gap:8px;padding:8px 15px;border-bottom:1px solid var(--bdr);font-size:12px}
 .history-row:last-child{border-bottom:none}
 .history-date{color:var(--mut);font-size:11px;font-weight:500;min-width:60px}
@@ -292,7 +300,8 @@ body{padding-bottom:calc(62px + env(safe-area-inset-bottom))}
 
 <!-- HISTORY PANEL -->
 <div id="history-panel" style="display:none;padding:0 20px 30px">
-  <div style="font-size:14px;font-weight:700;color:var(--txt);padding:16px 0 10px">Riwayat 14 Hari Terakhir</div>
+  <div style="font-size:14px;font-weight:700;color:var(--txt);padding:16px 0 10px">Riwayat Bulan Ini</div>
+  <div class="history-summary-badge" id="history-summary" style="display:none"></div>
   <div class="task-card" id="history-list"></div>
   <button onclick="closeHistory()" style="margin-top:14px;width:100%;padding:11px;border-radius:var(--r);border:1.5px solid var(--bdr);background:var(--card);font-family:var(--font);font-size:13px;font-weight:600;color:var(--txt);cursor:pointer">← Kembali</button>
 </div>
@@ -384,7 +393,6 @@ const DAILY = [
   { id:'p2', block:'pagi',  time:'08.20', label:'Cek Komentar & Message di Meta',              detail:'Buka Meta Business Suite. Balas semua komentar di postingan dan semua pesan (Message) yang masuk hari ini.' },
   { id:'p3', block:'pagi',  time:'08.40', label:'Send Materi Status WA Toko — Tema Hari Ini',  detail:'Kirim materi konten untuk Status WA Toko sesuai tema yang sudah direncanakan. Pastikan visual sudah siap.' },
   { id:'p4', block:'pagi',  time:'08.50', label:'Send Status WA Toko — Konten Promo',          detail:'Kirimkan konten promo ke Status WA Toko. Visual menarik, pesan jelas, CTA terbaca.' },
-  { id:'p5', block:'pagi',  time:'09.00', label:'Send Materi Program Rekomendasi di Grup',     detail:'Kirim materi atau reminder Program Rekomendasi ke grup WhatsApp yang sudah ditentukan.' },
   { id:'p6', block:'pagi',  time:'09.15', label:'Tambah 2 Foto & 2 Video ke Profil GMB',       detail:'Upload 2 foto dan 2 video terbaru ke profil Google My Business Kubah Emas. Pastikan kualitas visual bagus.' },
   { id:'p7', block:'pagi',  time:'09.30', label:'Posting 1 Postingan di GMB',                  detail:'Buat dan publish 1 postingan di Google My Business. Sertakan foto, teks menarik, dan Call-to-Action yang jelas.' },
   { id:'p8', block:'pagi',  time:'09.45', label:'Balas Review di Google My Business',          detail:'Cek semua review baru di GMB Kubah Emas. Balas setiap review — positif maupun negatif — dengan respons profesional dan hangat.' },
@@ -394,6 +402,15 @@ const DAILY = [
 
 const WEEKLY_SELASA = [
   { id:'w_sch', block:'schedule', time:'10.15', label:'Schedule 3 Posting untuk 7 Hari ke Depan', detail:'Buat dan jadwalkan 3 konten posting di Social Media Toko dan Jasa untuk 7 hari ke depan. Gunakan fitur Schedule di Meta/Creator Studio. Pastikan konten sudah siap sebelum dijadwalkan.' },
+];
+
+// Ganti "Send Materi Program Rekomendasi di Grup" — dulu daily, sekarang
+// cuma muncul Senin & Kamis, dengan isi materi yang beda tiap harinya.
+const MATERI_SENIN = [
+  { id:'p5_senin', block:'pagi', time:'09.00', label:'Send Materi Status Divisi Toko di Group Kubah Emas Family', detail:'Kirim materi status Divisi Toko ke grup WhatsApp "Kubah Emas Family".' },
+];
+const MATERI_KAMIS = [
+  { id:'p5_kamis', block:'pagi', time:'09.00', label:'Send Materi Program Rekomendasi KUMASINDO di Group Kubah Emas Family', detail:'Kirim materi Program Rekomendasi KUMASINDO ke grup WhatsApp "Kubah Emas Family".' },
 ];
 
 const PRODUKSI_TOKO = [
@@ -544,7 +561,9 @@ function isLastDayOfMonth(){
 function getTodayTasks(){
   const day=new Date().getDay(); // 0=Sun
   let tasks=[...DAILY];
+  if(day===1) tasks=tasks.concat(MATERI_SENIN); // Senin
   if(day===2) tasks=tasks.concat(WEEKLY_SELASA); // Selasa
+  if(day===4) tasks=tasks.concat(MATERI_KAMIS); // Kamis
   if(day>=1&&day<=3) tasks=tasks.concat(PRODUKSI_TOKO); // Senin-Rabu
   if(day>=4&&day<=6) tasks=tasks.concat(PRODUKSI_JASA); // Kamis-Sabtu
   if(isLastDayOfMonth()) tasks=tasks.concat(AKHIR_BULAN);
@@ -752,15 +771,38 @@ function toggleTask(id){
 
 // ── HISTORY ───────────────────────────────────────────
 function renderHistory(){
-  const hist=getHistory().slice(-14).reverse();
-  const now=todayKey();
+  const now=new Date();
+  const monthPrefix=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  const hist=getHistory().filter(h=>h.date.startsWith(monthPrefix)).sort((a,b)=>b.date.localeCompare(a.date));
+  const todayStr=todayKey();
+
+  // Indikator akumulasi bulan berjalan — rata-rata % dari semua hari
+  // yang udah tercatat bulan ini, terus diklasifikasi jadi 3 status.
+  const summaryEl=document.getElementById('history-summary');
+  if(hist.length){
+    const avgPct=hist.reduce((s,h)=>s+h.pct,0)/hist.length;
+    let statusLabel,statusClass;
+    if(avgPct>=100){ statusLabel='SEMPURNA'; statusClass='status-sempurna'; }
+    else if(avgPct>=86){ statusLabel='BAIK'; statusClass='status-baik'; }
+    else { statusLabel='BURUK'; statusClass='status-buruk'; }
+    summaryEl.innerHTML=`
+      <div class="history-summary-val">${avgPct.toFixed(0)}%</div>
+      <div class="history-summary-right">
+        <div class="history-summary-status ${statusClass}">${statusLabel}</div>
+        <div class="history-summary-sub">Rata-rata kepatuhan ${MONTHS_ID[now.getMonth()]} ${now.getFullYear()} · ${hist.length} hari tercatat</div>
+      </div>`;
+    summaryEl.style.display='flex';
+  } else {
+    summaryEl.style.display='none';
+  }
+
   if(!hist.length){
-    document.getElementById('history-list').innerHTML='<div style="padding:20px;text-align:center;color:var(--mut);font-size:12px">Belum ada riwayat. Mulai centang task hari ini!</div>';
+    document.getElementById('history-list').innerHTML='<div style="padding:20px;text-align:center;color:var(--mut);font-size:12px">Belum ada riwayat bulan ini. Mulai centang task hari ini!</div>';
     return;
   }
   document.getElementById('history-list').innerHTML=hist.map(h=>{
     const d=new Date(h.date+'T00:00:00');
-    const lbl=h.date===now?'Hari ini':DAYS_ID[d.getDay()]+', '+d.getDate()+' '+MONTHS_ID[d.getMonth()];
+    const lbl=h.date===todayStr?'Hari ini':DAYS_ID[d.getDay()]+', '+d.getDate()+' '+MONTHS_ID[d.getMonth()];
     const barColor=h.pct===100?'var(--grn)':h.pct>=70?'var(--yl)':'var(--red)';
     const pctColor=h.pct===100?'var(--grn)':h.pct>=70?'var(--yl-d)':'var(--red)';
     return`<div class="history-row">
